@@ -1,0 +1,10 @@
+﻿version: '3'
+services:
+  app:
+    build: .
+    container_name: product_category_app
+    volumes:
+      - .:/app
+    environment:
+      - PYSPARK_PYTHON=/usr/bin/python3
+      - JAVA_HOME=/usr/lib/jvm/java-17-openjdk
