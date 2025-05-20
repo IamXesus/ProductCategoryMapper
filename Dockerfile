@@ -1,26 +1,31 @@
-﻿# Используем более полный базовый образ
+﻿# Базовый образ
 FROM ubuntu:22.04
 
-# Устанавливаем зависимости
-RUN apt update && apt install -y \
-    python3 \
-    python3-pip \
-    openjdk-17-jdk \
-    && rm -rf /var/lib/apt/lists/*
+# Установка зависимостей
+RUN apt-get update && \
+    apt-get install -y software-properties-common && \
+    add-apt-repository -y ppa:openjdk-r/ppa && \
+    apt-get update && \
+    apt-get install -y openjdk-17-jdk python3 python3-pip && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Устанавливаем переменные окружения
-ENV PYSPARK_PYTHON=/usr/bin/python3
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+# Определение JAVA_HOME с актуальным путем
+RUN ln -s /usr/lib/jvm/java-17-openjdk-* /usr/lib/jvm/java-17-openjdk
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+ENV PATH=$JAVA_HOME/bin:$PATH
 
-# Создаем рабочую директорию
+# Проверка установки
+RUN java -version
+RUN which java
+
+# Установка зависимостей Python
 WORKDIR /app
-
-# Копируем зависимости
 COPY requirements.txt .
-RUN pip3 install -r requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
 
-# Копируем исходный код
+# Копирование приложения
 COPY . .
 
-# Запускаем скрипт
+# Запуск приложения
 CMD ["python3", "main.py"]
