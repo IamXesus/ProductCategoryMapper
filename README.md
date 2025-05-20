@@ -3,7 +3,4 @@
 
 
 🛠 Инструкция по запуску 
-Соберите Docker-образ : docker build -t product-category-app .
-
-Запустите контейнер : 
-docker run product-category-app
+docker-compose up --build
